@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Live Board | TableFlow{% endblock %}
+{% block head %}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const list = document.querySelector("#announceList");
+    const ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/announcements/");
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const item = document.createElement("div");
+      item.className = "announcement-item p-3 rounded-4 border mb-2";
+      item.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start gap-2">
+          <div class="fw-semibold">${data.title}</div>
+          <span class="badge ${data.priority >= 3 ? "text-bg-danger" : (data.priority == 2 ? "text-bg-warning" : "text-bg-secondary")}">
+            ${data.priority >= 3 ? "Urgent" : (data.priority == 2 ? "Important" : "Update")}
+          </span>
+        </div>
+        <div class="text-muted small mt-1">${data.message}</div>
+      `;
+      list.prepend(item);
+    };
+  });
+</script>
+{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0">Live Board</h2>
+    <div class="text-muted small">Updates in real time</div>
+  </div>
+
+  <div id="announceList">
+    {% for a in announcements %}
+      <div class="announcement-item p-3 rounded-4 border mb-2">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+          <div class="fw-semibold">{{ a.title }}</div>
+          <span class="badge {% if a.priority >= 3 %}text-bg-danger{% elif a.priority == 2 %}text-bg-warning{% else %}text-bg-secondary{% endif %}">
+            {% if a.priority >= 3 %}Urgent{% elif a.priority == 2 %}Important{% else %}Update{% endif %}
+          </span>
+        </div>
+        <div class="text-muted small mt-1">{{ a.message }}</div>
+      </div>
+    {% empty %}
+      <div class="text-muted">No announcements yet.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

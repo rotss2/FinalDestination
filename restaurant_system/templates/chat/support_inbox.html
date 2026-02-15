@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Support Inbox | TableFlow{% endblock %}
+{% block content %}
+  <h2 class="fw-bold mb-3">Support Inbox</h2>
+  <div class="row g-3">
+    {% for t in threads %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <a class="card card-hover text-decoration-none" href="{% url 'chat:thread' t.id %}">
+          <div class="card-body">
+            <div class="fw-semibold">Thread #{{ t.id }}</div>
+            <div class="text-muted small">Customer: {{ t.customer.username }}</div>
+            <div class="text-muted small">Open: {{ t.is_open }}</div>
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <div class="text-muted">No chat threads.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

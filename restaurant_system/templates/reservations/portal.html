@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}My Reservations | TableFlow{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0">My Reservations</h2>
+    <a class="btn btn-primary" href="{% url 'reservations:create_reservation' %}">New Reservation</a>
+  </div>
+
+  <div class="card rounded-4 shadow-sm">
+    <div class="table-responsive">
+      <table class="table mb-0 align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Date & Time</th>
+            <th>Table</th>
+            <th>Guests</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in my_reservations %}
+            <tr>
+              <td>{{ r.start_dt|date:"M d, Y" }} • {{ r.start_dt|time:"H:i" }}</td>
+              <td>{{ r.table.number }} ({{ r.table.capacity }})</td>
+              <td>{{ r.guests }}</td>
+              <td><span class="badge text-bg-secondary">{{ r.get_status_display }}</span></td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'reservations:edit_reservation' r.id %}">Edit</a>
+                <a class="btn btn-sm btn-outline-danger" href="{% url 'reservations:cancel_reservation' r.id %}">Cancel</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-muted p-4">No reservations yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

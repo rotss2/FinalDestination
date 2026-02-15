@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}Login | TableFlow{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card shadow-sm rounded-4">
+      <div class="card-body p-4">
+        <h3 class="fw-bold mb-3">Welcome back</h3>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            {{ form.username|add_class:"form-control" }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            {{ form.password|add_class:"form-control" }}
+          </div>
+          <button class="btn btn-primary w-100">Login</button>
+        </form>
+        <div class="small text-muted mt-3">
+          No account? <a href="{% url 'accounts:signup' %}">Create one</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

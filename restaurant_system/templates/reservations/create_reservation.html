@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}New Reservation | TableFlow{% endblock %}
+{% block head %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const start = document.querySelector("#id_start_dt");
+      const duration = document.querySelector("#id_duration_minutes");
+      const guests = document.querySelector("#id_guests");
+      const hint = document.querySelector("#availabilityHint");
+
+      async function check() {
+        if (!start.value) return;
+        const url = new URL("{% url 'reservations:check_availability' %}", window.location.origin);
+        url.searchParams.set("start_dt", start.value);
+        url.searchParams.set("duration", duration.value || "90");
+        url.searchParams.set("guests", guests.value || "2");
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.ok) {
+          hint.innerHTML = data.available_count > 0
+            ? `<span class="text-success">Available: ${data.available_count} table(s). Suggested: Table ${data.suggested_table}</span>`
+            : `<span class="text-danger">No tables available for that slot.</span>`;
+        } else {
+          hint.innerHTML = `<span class="text-danger">Could not check availability.</span>`;
+        }
+      }
+
+      [start, duration, guests].forEach(el => el.addEventListener("change", check));
+    });
+  </script>
+{% endblock %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card shadow-sm rounded-4">
+        <div class="card-body p-4">
+          <h2 class="fw-bold mb-3">Make a reservation</h2>
+          <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label">Date & Time</label>
+                {{ form.start_dt|add_class:"form-control" }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Guests</label>
+                {{ form.guests|add_class:"form-control" }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Duration (minutes)</label>
+                {{ form.duration_minutes|add_class:"form-control" }}
+              </div>
+              <div class="col-md-8">
+                <label class="form-label">Notes (optional)</label>
+                {{ form.notes|add_class:"form-control" }}
+              </div>
+            </div>
+
+            <div id="availabilityHint" class="mt-3 small"></div>
+
+            <button class="btn btn-primary mt-3 w-100">Confirm Reservation</button>
+          </form>
+          <p class="text-muted small mt-3 mb-0">
+            Tip: availability updates automatically as you change the time, guests, or duration.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,50 @@
+:root{
+  --radius: 1.25rem;
+}
+body{
+  background: radial-gradient(1000px 500px at 20% 0%, rgba(13,110,253,.10), transparent 60%),
+              radial-gradient(900px 500px at 90% 10%, rgba(32,201,151,.12), transparent 60%),
+              #f8fafc;
+}
+.hero{
+  background: linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 12px 30px rgba(0,0,0,.06);
+}
+.glass{
+  background: rgba(255,255,255,.7);
+  border: 1px solid rgba(0,0,0,.06);
+  backdrop-filter: blur(10px);
+}
+.card-hover{
+  transition: transform .15s ease, box-shadow .15s ease;
+  border-radius: var(--radius);
+}
+.card-hover:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+.rounded-4{
+  border-radius: var(--radius)!important;
+}
+.placeholder-img{
+  height: 320px;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,.02),
+    rgba(0,0,0,.02) 10px,
+    rgba(0,0,0,.04) 10px,
+    rgba(0,0,0,.04) 20px
+  );
+}
+.chat-box{
+  height: 60vh;
+  overflow-y: auto;
+  background: rgba(255,255,255,.75);
+}
+.chat-line{
+  margin-bottom: .75rem;
+}
+.chart-wrap{
+  height: 360px;
+}

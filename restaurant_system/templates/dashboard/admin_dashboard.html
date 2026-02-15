@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | TableFlow{% endblock %}
+{% block head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const ctx = document.getElementById("peakChart");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: {{ hours|safe }},
+          datasets: [{
+            label: "Reservations (last 30 days)",
+            data: {{ counts|safe }},
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    });
+  </script>
+{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0">Admin Dashboard</h2>
+    <a class="btn btn-outline-secondary" href="/admin/">Manage Data (Django Admin)</a>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-md-3">
+      <div class="card rounded-4 shadow-sm">
+        <div class="card-body">
+          <div class="text-muted small">Active tables</div>
+          <div class="display-6 fw-bold">{{ total_tables }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3">
+      <div class="card rounded-4 shadow-sm">
+        <div class="card-body">
+          <div class="text-muted small">Reservations (30d)</div>
+          <div class="display-6 fw-bold">{{ total_reservations }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3">
+      <div class="card rounded-4 shadow-sm">
+        <div class="card-body">
+          <div class="text-muted small">Today occupancy</div>
+          <div class="display-6 fw-bold">{{ occupancy }}%</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3">
+      <div class="card rounded-4 shadow-sm">
+        <div class="card-body">
+          <div class="text-muted small">Avg wait (30d)</div>
+          <div class="display-6 fw-bold">{{ avg_wait }}m</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card rounded-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="fw-bold">Peak hour analysis</h5>
+      <div class="chart-wrap">
+        <canvas id="peakChart"></canvas>
+      </div>
+      <p class="text-muted small mt-2 mb-0">
+        Hour labels are 24-hour format.
+      </p>
+    </div>
+  </div>
+{% endblock %}

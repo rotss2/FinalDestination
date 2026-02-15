@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Queue Board | TableFlow{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0">Walk-in Queue</h2>
+    <form method="post" action="{% url 'reservations:add_walkin' %}" class="d-flex gap-2">
+      {% csrf_token %}
+      <input name="party_size" type="number" min="1" value="2" class="form-control" style="max-width: 140px;">
+      <button class="btn btn-primary">Add walk-in</button>
+    </form>
+  </div>
+
+  <div class="card rounded-4 shadow-sm">
+    <div class="table-responsive">
+      <table class="table mb-0 align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Arrived</th>
+            <th>Party size</th>
+            <th>Status</th>
+            <th>Est. wait (min)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in queue %}
+            <tr>
+              <td>{{ w.arrival_dt|date:"M d, Y" }} • {{ w.arrival_dt|time:"H:i" }}</td>
+              <td>{{ w.party_size }}</td>
+              <td><span class="badge text-bg-secondary">{{ w.get_status_display }}</span></td>
+              <td>{{ w.estimated_wait_minutes }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="text-muted p-4">No walk-ins yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="text-muted small mt-3">
+    Estimates use a simple heuristic for now; you can replace it with a queuing-theory model later.
+  </p>
+{% endblock %}
